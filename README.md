@@ -428,47 +428,7 @@ export ATM_PORT=8000
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-### Docker Deployment (Optional)
-```dockerfile
-FROM python:3.9-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
 
-## Future Enhancements
-
-### User Management System
-While the current implementation focuses on account operations with 3 pre-configured users, the system architecture supports expansion to include:
-
-#### User Registration & Management
-- **POST /users/register** - Create new user accounts
-- **GET /users/{user_id}** - Retrieve user information  
-- **PUT /users/{user_id}** - Update user details
-- **DELETE /users/{user_id}** - Remove user accounts
-
-#### Enhanced Account Features
-- **Multiple accounts per user** - Checking, savings, business accounts
-- **Account creation workflow** - POST /accounts/create
-- **Account types and categories** - Different account behaviors
-- **Account linking** - Connect multiple accounts to single user
-
-#### Authentication & Authorization
-- **User login system** - JWT token-based authentication
-- **Role-based access** - Customer, admin, bank staff permissions
-- **Account ownership validation** - Ensure users can only access their accounts
-- **Session management** - Secure session handling
-
-#### Advanced Banking Features
-- **Transaction history** - GET /accounts/{account_number}/transactions
-- **Transfer between accounts** - POST /transfers
-- **Account statements** - Generate monthly/yearly statements
-- **Interest calculations** - Automatic interest for savings accounts
-- **Account limits and rules** - Daily withdrawal limits, minimum balances
-
-The modular FastAPI architecture and singleton Bank pattern provide a solid foundation for these enhancements without requiring major refactoring.
 
 ## License
 

@@ -66,7 +66,7 @@ class Config:
     def get_base_url(self) -> str:
         """Get base URL with environment variable override"""
         default_url = self._config[self._environment]["server"]["base_url"]
-        custom_url = os.getenv("ATM_BASE_URL")
+        custom_url = os.getenv("ATM_BASE_URL", default_url)
         
         if custom_url:
             return custom_url

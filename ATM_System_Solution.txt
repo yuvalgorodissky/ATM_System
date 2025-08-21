@@ -1,0 +1,316 @@
+==============================================================================
+                        ATM SYSTEM ASSIGNMENT SOLUTION
+==============================================================================
+
+Developer: Yuval Gorodissky
+Project: Software Engineer - ATM System
+Completion Date: 2025
+
+==============================================================================
+                              PROJECT OVERVIEW
+==============================================================================
+
+This document contains the complete solution for the ATM System assignment, 
+including detailed explanations of approach, design decisions, challenges 
+faced, and instructions for execution.
+
+==============================================================================
+                            PROJECT INFORMATION
+==============================================================================
+
+REPOSITORY & LINKS:
+- Git Repository: https://github.com/yuvalgorodissky/ATM_System
+- Live Production API: http://56.228.41.210:8000 (AWS EC2 Instance)
+- API Documentation: http://56.228.41.210:8000/docs
+- Interactive Testing: http://56.228.41.210:8000/redoc
+- Hosting: AWS EC2 Instance
+
+ASSIGNMENT REQUIREMENTS FULFILLED:
+✓ Server-side ATM system implementation
+✓ In-memory data storage
+✓ GET /accounts/{account_number}/balance endpoint
+✓ POST /accounts/{account_number}/withdraw endpoint  
+✓ POST /accounts/{account_number}/deposit endpoint
+✓ Cloud deployment (Production server running)
+✓ Comprehensive documentation
+✓ Git repository with version control
+
+==============================================================================
+                        APPROACH & DESIGN DECISIONS
+==============================================================================
+
+ARCHITECTURAL APPROACH:
+
+1. **Singleton Pattern for Bank Management**
+   - Rationale: Ensure single source of truth for all banking operations
+   - Implementation: Thread-safe singleton with double-checked locking
+   - Benefits: Prevents multiple bank instances, ensures data consistency
+
+2. **Account-Level Thread Safety**
+   - Rationale: Support concurrent operations while maintaining data integrity
+   - Implementation: Individual threading.Lock() for each account
+   - Benefits: Different accounts can be accessed simultaneously, prevents race conditions
+
+3. **FastAPI Framework Selection**
+   - Rationale: Modern, fast, automatic API documentation, type hints support
+   - Benefits: Built-in validation, async support, interactive documentation
+
+4. **Router-Based Architecture**
+   - Rationale: Modular code organization, separation of concerns
+   - Implementation: Separate routers for different API functionalities
+   - Benefits: Easier maintenance, scalable structure
+
+5. **Configuration Management System**
+   - Rationale: Support multiple deployment environments
+   - Implementation: YAML-based config with environment variable overrides
+   - Benefits: Easy deployment, no code changes between environments
+
+TECHNICAL DECISIONS:
+
+**Data Storage:**
+- Decision: In-memory dictionary storage
+- Rationale: Assignment requirement, simplicity, fast access
+- Trade-off: No persistence (acceptable for demo)
+
+**Input Validation:**
+- Decision: Pydantic models for request/response validation
+- Rationale: Automatic validation, clear error messages, type safety
+- Benefits: Prevents invalid data, consistent API responses
+
+**Error Handling:**
+- Decision: HTTP status codes with descriptive messages
+- Implementation: 200 (success), 400 (bad request), 404 (not found)
+- Benefits: RESTful design, clear error communication
+
+==============================================================================
+                           CHALLENGES & SOLUTIONS
+==============================================================================
+
+CHALLENGE 1: Thread Safety
+Problem: Concurrent requests could cause race conditions in account operations
+Solution: Implemented account-level locking with threading.Lock()
+Result: Thread-safe operations while allowing concurrent access to different accounts
+
+CHALLENGE 2: Circular Import Dependencies  
+Problem: Router needed Bank access, creating circular imports
+Solution: Singleton pattern allowing direct access without circular dependencies
+Result: Clean architecture without import issues
+
+CHALLENGE 3: Configuration Management
+Problem: Supporting multiple environments (development/production)
+Solution: YAML-based configuration with environment variable overrides
+Result: Easy deployment across different environments
+
+CHALLENGE 4: Data Initialization
+Problem: Need initial account data while maintaining in-memory storage
+Solution: File-based initialization that loads accounts at startup
+Result: Flexible account setup while meeting in-memory requirement
+
+CHALLENGE 5: API Consistency
+Problem: Ensuring consistent response formats across endpoints
+Solution: Pydantic models for standardized request/response structures
+Result: Consistent, validated API responses with clear documentation
+
+==============================================================================
+                          API ENDPOINTS & USAGE
+==============================================================================
+
+BASE URL:
+- Production: http://56.228.41.210:8000
+
+AVAILABLE ENDPOINTS:
+
+1. **System Status**
+   GET /
+   Response: {"message": "ATM System API is running", "environment": "production"}
+
+2. **Get Account Balance**
+   GET /accounts/{account_number}/balance
+   Example: GET /accounts/123456/balance
+   Response: {"account_number": "123456", "balance": 1000.0}
+
+3. **Withdraw Money**
+   POST /accounts/{account_number}/withdraw
+   Body: {"amount": 100.0}
+   Example: POST /accounts/123456/withdraw
+   Response: {
+     "success": true,
+     "message": "Successfully withdrew $100.00. New balance: $900.00",
+     "account_number": "123456",
+     "balance": 900.0
+   }
+
+4. **Deposit Money**
+   POST /accounts/{account_number}/deposit  
+   Body: {"amount": 200.0}
+   Example: POST /accounts/123456/deposit
+   Response: {
+     "success": true,
+     "message": "Successfully deposited $200.00. New balance: $1100.00",
+     "account_number": "123456", 
+     "balance": 1100.0
+   }
+
+==============================================================================
+                         EXECUTION INSTRUCTIONS
+==============================================================================
+
+METHOD 1: PRODUCTION SERVER (IMMEDIATE TESTING)
+The API is already deployed and running on AWS EC2 instance.
+
+Base URL: http://56.228.41.210:8000
+Documentation: http://56.228.41.210:8000/docs
+Hosting: AWS EC2 Instance
+
+Test Commands:
+```bash
+# Check system status
+curl -X GET "http://56.228.41.210:8000/"
+
+# Check account balance
+curl -X GET "http://56.228.41.210:8000/accounts/123456/balance"
+
+# Deposit money
+curl -X POST "http://56.228.41.210:8000/accounts/123456/deposit" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 250.0}'
+
+# Withdraw money  
+curl -X POST "http://56.228.41.210:8000/accounts/123456/withdraw" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 100.0}'
+```
+
+METHOD 2: LOCAL INSTALLATION
+1. Clone repository:
+   git clone https://github.com/yuvalgorodissky/ATM_System.git
+   cd ATM_System
+
+2. Install dependencies:
+   pip install -r requirements.txt
+
+3. Run application:
+   python main.py
+
+4. Access API:
+   - Base URL: http://localhost:8000
+   - Documentation: http://localhost:8000/docs
+
+METHOD 3: INTERACTIVE TESTING
+Visit the interactive API documentation at:
+http://56.228.41.210:8000/docs
+
+This provides a web interface to test all endpoints directly.
+
+==============================================================================
+                                 ACCOUNTS
+==============================================================================
+
+The system comes pre-configured with 3 accounts:
+
+ACCOUNT 1: 123456
+- Initial Balance: $1,000.00
+
+ACCOUNT 2: 789012
+- Initial Balance: $2,500.00
+
+ACCOUNT 3: 345678
+- Initial Balance: $500.00
+
+SYSTEM ASSUMPTIONS:
+- Fixed account base of 3 accounts only
+- Account-centric operations (focus on account numbers)
+- Simple account structure for demonstration
+- No user registration/management in current implementation
+
+EXPANDABILITY:
+While the current implementation focuses on account operations with pre-configured 
+accounts, the system can be easily expanded to include:
+- User registration and management endpoints
+- Multiple accounts per user  
+- User authentication and authorization
+- User profile management
+- Account creation workflows
+
+The modular architecture supports these enhancements without major restructuring.
+
+==============================================================================
+                           PROJECT STRUCTURE
+==============================================================================
+
+ATM_System/
+├── README.md                 # Comprehensive documentation
+├── requirements.txt          # Python dependencies
+├── accounts.txt             # Initial account data
+├── main.py                  # FastAPI application entry point
+├── config/
+│   ├── config.yaml         # Environment configurations
+│   └── settings.py         # Configuration loading logic
+├── src/
+│   ├── config/
+│   │   └── config_manager.py  # Configuration management
+│   ├── models/
+│   │   ├── account.py      # Account model with thread safety
+│   │   └── bank.py         # Bank singleton implementation
+│   └── utils/
+│       └── file_loader.py  # Account data file loading
+└── routers/
+    └── accounts.py         # Account API endpoints
+
+==============================================================================
+                         TECHNICAL SPECIFICATIONS
+==============================================================================
+
+TECHNOLOGY STACK:
+- Language: Python 3.8+
+- Framework: FastAPI
+- Validation: Pydantic
+- Configuration: PyYAML
+- Threading: Python threading module
+- Documentation: Automatic OpenAPI/Swagger
+
+SECURITY FEATURES:
+- Input validation on all endpoints
+- Thread-safe operations
+- Proper error handling without sensitive data exposure
+- Account existence validation
+- Amount validation (prevents negative values)
+
+PERFORMANCE FEATURES:
+- Account-level locking for concurrent access
+- In-memory operations for fast response times  
+- Singleton pattern for efficient resource usage
+- Synchronous operations optimized for CPU-bound tasks
+
+==============================================================================
+                              CONCLUSION
+==============================================================================
+
+This ATM System solution demonstrates:
+
+✓ Modern API development practices
+✓ Thread-safe concurrent operations  
+✓ Comprehensive error handling
+✓ Production-ready deployment
+✓ Clear documentation and testing instructions
+✓ Scalable architecture design
+
+The system successfully meets all assignment requirements while implementing
+best practices for security, performance, and maintainability.
+
+==============================================================================
+                            CONTACT INFORMATION
+==============================================================================
+
+Developer: Yuval Gorodissky
+GitHub: https://github.com/yuvalgorodissky
+Repository: https://github.com/yuvalgorodissky/ATM_System
+
+For questions or issues:
+1. Check the API documentation: http://56.228.41.210:8000/docs
+2. Review the README.md file
+3. Open an issue on the GitHub repository
+
+==============================================================================
+                              END OF DOCUMENT
+==============================================================================

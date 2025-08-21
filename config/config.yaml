@@ -9,7 +9,7 @@ development:
   
 production:
   server:
-    host: "0.0.0.0"
+    host: "16.170.240.218"
     port: 8000
     base_url: "http://16.170.240.218:8000"
     

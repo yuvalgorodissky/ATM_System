@@ -13,7 +13,7 @@ def get_server_config():
     }
 
 def get_base_url():
-    """Get base URL for API testing"""
+    """Get base URL for API access"""
     return config.get_base_url()
 
 def get_environment():

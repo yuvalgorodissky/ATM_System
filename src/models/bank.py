@@ -66,14 +66,3 @@ class Bank:
     
     def get_all_accounts(self):
         return list(self.accounts.keys())
-    
-    def reset_for_testing(self):
-        """Reset bank state for testing - use with caution"""
-        with self._lock:
-            self.accounts.clear()
-            print("Bank state reset for testing")
-    
-    def reload_accounts(self, accounts_file="accounts.txt"):
-        """Reload accounts from file - useful for testing"""
-        self.reset_for_testing()
-        self.initialize_accounts(accounts_file)

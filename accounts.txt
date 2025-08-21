@@ -1,0 +1,7 @@
+# ATM System Account Data
+# Format: account_number,initial_balance
+# You can use comma or space separation
+
+123456,1000.0
+789012,2500.0
+345678,500.0
